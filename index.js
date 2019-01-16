@@ -1,4 +1,4 @@
-const {exec} = require("child_process");
+const {execSync} = require("child_process");
 
 let Service, Characteristic;
 
@@ -16,10 +16,12 @@ function CommandOutletAccessory(log, config) {
     this.ON = 1;
     this.OFF = 0;
 
+    this.log = log;
+
     this.name = config["name"];
     this.onCommand = config["on_command"];
     this.offCommand = config["off_command"];
-    this.currentStatus = this.OFF;
+    this.currentState = this.OFF;
 
     this.service = new Service.Outlet(this.name);
     this.service.getCharacteristic(Characteristic.On)
@@ -34,16 +36,18 @@ CommandOutletAccessory.prototype.getServices = function() {
 };
 
 CommandOutletAccessory.prototype.getOn = function (callback) {
-    callback(null, this.currentStatus);
+    callback(null, this.currentState);
 };
 
 CommandOutletAccessory.prototype.setOn = function (state, callback) {
+    let output;
     if (state === this.ON && this.onCommand) {
-        exec(this.onCommand);
+        output = execSync(this.onCommand);
     } else if (state === this.OFF && this.offCommand) {
-        exec(this.offCommand);
+        output = execSync(this.offCommand);
     }
-    this.currentStatus = state;
+    this.currentState = state;
+    this.log(`CommandOutlet switched ${(state ? "on" : "off")}. Command output: '${output}'`);
     callback();
 };
 
