@@ -18,5 +18,9 @@
   "homepage": "https://github.com/jkhlr/homebridge-command-outlet#readme",
   "dependencies": {
     "homebridge": ">=0.4.45"
-  }
+  },
+  "keywords": [
+    "homebridge-plugin",
+    "homebridge-command-outlet"
+  ]
 }
