@@ -7,7 +7,7 @@ module.exports = function (homebridge) {
     Characteristic = homebridge.hap.Characteristic;
     homebridge.registerAccessory(
         "homebridge-command-outlet",
-        "Command-Outlet",
+        "CommandOutlet",
         CommandOutletAccessory
     );
 };
@@ -28,6 +28,10 @@ function CommandOutletAccessory(log, config) {
     this.service.getCharacteristic(Characteristic.OutletInUse)
         .on('get', this.getOutletInUse.bind(this));
 }
+
+CommandOutletAccessory.prototype.getServices = function() {
+  return [this.service];
+};
 
 CommandOutletAccessory.prototype.getOn = function (callback) {
     callback(null, this.currentStatus);
