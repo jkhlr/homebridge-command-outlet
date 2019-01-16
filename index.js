@@ -21,6 +21,7 @@ function CommandOutletAccessory(log, config) {
     this.name = config["name"];
     this.onCommand = config["on_command"];
     this.offCommand = config["off_command"];
+    this.timeout = config["timeout"] || 0;
     this.currentState = this.OFF;
 
     this.service = new Service.Outlet(this.name);
@@ -29,10 +30,15 @@ function CommandOutletAccessory(log, config) {
         .on('set', this.setOn.bind(this));
     this.service.getCharacteristic(Characteristic.OutletInUse)
         .on('get', this.getOutletInUse.bind(this));
+
+    this.execCommand = (command) => {
+        const output = execSync(command).toString();
+        this.log(`CommandOutlet switched. Command: '${command}', Output: '${output}'`);
+    }
 }
 
-CommandOutletAccessory.prototype.getServices = function() {
-  return [this.service];
+CommandOutletAccessory.prototype.getServices = function () {
+    return [this.service];
 };
 
 CommandOutletAccessory.prototype.getOn = function (callback) {
@@ -40,14 +46,14 @@ CommandOutletAccessory.prototype.getOn = function (callback) {
 };
 
 CommandOutletAccessory.prototype.setOn = function (state, callback) {
-    let output;
+    let command;
     if (state === this.ON && this.onCommand) {
-        output = execSync(this.onCommand);
+        command = this.onCommand;
     } else if (state === this.OFF && this.offCommand) {
-        output = execSync(this.offCommand);
+        command = this.offCommand;
     }
+    setTimeout(() => {this.execCommand(command)}, this.timeout);
     this.currentState = state;
-    this.log(`CommandOutlet switched ${(state ? "on" : "off")}. Command output: '${output}'`);
     callback();
 };
 
