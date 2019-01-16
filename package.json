@@ -22,5 +22,9 @@
   "keywords": [
     "homebridge-plugin",
     "homebridge-command-outlet"
-  ]
+  ],
+  "engines": {
+    "homebridge": ">=0.4.45",
+    "node": ">=6.0.0"
+  }
 }
