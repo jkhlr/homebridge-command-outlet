@@ -13,8 +13,8 @@ module.exports = function (homebridge) {
 };
 
 function CommandOutletAccessory(log, config) {
-    this.ON = 1;
-    this.OFF = 0;
+    this.ON = true;
+    this.OFF = false;
 
     this.log = log;
 
